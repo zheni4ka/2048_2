@@ -11,6 +11,9 @@
 
     <Window.InputBindings>
         <KeyBinding Key="A" Command="{Binding ShiftLeftCommand}"/>
+        <KeyBinding Key="D" Command="{Binding ShiftRightCommand}"/>
+        <KeyBinding Key="S" Command="{Binding ShiftDownCommand}"/>
+        <KeyBinding Key="W" Command="{Binding ShiftUpCommand}"/>
     </Window.InputBindings>
 
     <Grid>

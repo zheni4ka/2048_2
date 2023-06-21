@@ -23,10 +23,18 @@ namespace _2048.ViewModels
         private int Fst_Num = 2; private int Lst_Num = 2048;
 
         private RelayCommand shiftLeftCommand;
+        private RelayCommand shiftRightCommand;
+        private RelayCommand shiftUpCommand;
+        private RelayCommand shiftDownCommand;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand ShiftLeftCommand => shiftLeftCommand;
+        public ICommand ShiftRightCommand => shiftRightCommand;
+
+        public ICommand ShiftUpCommand => shiftUpCommand;
+
+        public ICommand ShiftDownCommand => shiftDownCommand;
 
         //public RelayCommand ShiftRightCommand { get; init; }
         //public RelayCommand ShiftUpCommand { get; init; }
@@ -36,13 +44,156 @@ namespace _2048.ViewModels
         public TableVM()
         {
             shiftLeftCommand = new RelayCommand(ShiftLeft);
-            GenerateACell();
+            shiftRightCommand = new RelayCommand(ShiftRight);
+            shiftDownCommand = new RelayCommand(ShiftDown);
+            shiftUpCommand = new RelayCommand(ShiftUp);
             GenerateACell();
         }
 
-        public void ShiftLeft() {GenerateACell();}
+        public void ShiftLeft()
+        {
+            bool shifted = false;
+            for (int i = 0; i < cells.GetLength(0); i++)
+            {
+                int index = 0;
+                for (int j = 0; j < cells.GetLength(1); j++)
+                {
+                    if (cells[i, j] != null)    
+                    {
+                        if (index > 0 && cells[i, index - 1].num == cells[i, j].num)
+                        {
+                            cells[i, index - 1].num *= 2;
+                            cells[i, j] = null;
+                            shifted = true;
+                        }
+                        else
+                        {
+                            if (j != index)
+                            {
+                                cells[i, index] = cells[i, j];
+                                cells[i, j] = null;
+                                shifted = true;
+                            }
+                            index++;
+                        }
+                    }
+                }
+            }
+            if (shifted)
+            {
+                GenerateACell();
+            }
 
-       
+        }
+
+        public void ShiftRight()
+        {
+            bool shifted = false;
+            for (int i = 0; i < cells.GetLength(0); i++)
+            {
+                int index = cells.GetLength(1) - 1;
+                for (int j = cells.GetLength(1) - 1; j >= 0; j--)
+                {
+                    if (cells[i, j] != null)
+                    {
+                        if (index < cells.GetLength(1) - 1 && cells[i, index + 1].num == cells[i, j].num)
+                        {
+                            cells[i, index + 1].num *= 2;
+                            cells[i, j] = null;
+                            shifted = true;
+                        }
+                        else
+                        {
+                            if (j != index)
+                            {
+                                cells[i, index] = cells[i, j];
+                                cells[i, j] = null;
+                                shifted = true;
+                            }
+                            index--;
+                        }
+                    }
+                }
+            }
+            if (shifted)
+            {
+                GenerateACell();
+            }
+        }
+
+        public void ShiftDown()
+        {
+            bool shifted = false;
+            for (int j = 0; j < cells.GetLength(1); j++)
+            {
+                int index = cells.GetLength(0) - 1;
+                for (int i = cells.GetLength(0) - 1; i >= 0; i--)
+                {
+                    if (cells[i, j] != null)
+                    {
+                        if (index < cells.GetLength(0) - 1 && cells[index + 1, j].num == cells[i, j].num)
+                        {
+                            cells[index + 1, j].num *= 2;
+                            cells[i, j] = null;
+                            shifted = true;
+                        }
+                        else
+                        {
+                            if (i != index)
+                            {
+                                cells[index, j] = cells[i, j];
+                                cells[i, j] = null;
+                                shifted = true;
+                            }
+                            index--;
+                        }
+                    }
+                }
+            }
+            if (shifted)
+            {
+                GenerateACell();
+            }
+        }
+
+        public void ShiftUp()
+        {
+            bool shifted = false;
+            for (int j = 0; j < cells.GetLength(1); j++)
+            {
+                int index = 0;
+                for (int i = 0; i < cells.GetLength(0); i++)
+                {
+                    if (cells[i, j] != null)
+                    {
+                        if (index > 0 && cells[index - 1, j].num == cells[i, j].num)
+                        {
+                            cells[index - 1, j].num *= 2;
+                            cells[i, j] = null;
+                            shifted = true;
+                        }
+                        else
+                        {
+                            if (i != index)
+                            {
+                                cells[index, j] = cells[i, j];
+                                cells[i, j] = null;
+                                shifted = true;
+                            }
+                            index++;
+                        }
+                    }
+                }
+            }
+            if (shifted)
+            {
+                GenerateACell();
+            }
+        }
+
+
+
+
         private void GenerateACell()
         {
             int row, col;
